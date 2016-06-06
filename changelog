@@ -1,0 +1,32 @@
+
+what's new in 0.25.80 :
+1-we have included a changelog as you see here so you can see what's going on :)
+2-now you can see all command by typing <ls com>
+
+what's new in 0.25.82 :
+1-updates the way that changelog works so it is now more efficient
+
+what's new in 0.25.90 :
+-gui is back :) and it has been upgraded.
+ -it is now fully working
+ -deleted the gui py file.the gui is now in the main.py file
+
+what's new in 0.40 :
+1-added the squar functionality
+2-speed improvment
+
+what's new in 0.52.50:
+-cross platform compatibility
+
+what's new in 0.53:
+-a lot of bug fixes and improvments
+
+what's new in 0.56.50:
+-getx programe which is for calculating ratios.
+-general bug fixes and improvments
+
+what's new in 0.59:
+-a lot of bug fixes and improvments
+
+what's new in 0.70:
+-included the new contact manager Pycont
