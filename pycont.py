@@ -20,7 +20,7 @@ def isContactInList(name):
 		return True
 
 def help():
-	print "*** PyCont contacts manager <powerd by Aleiti Systems Ltd all rights reserved> v {0} ***\
+	print "*** PyCont contacts manager <powerd by Aleiti Systems all rights reserved> v {0} ***\
 		\ntype A to add a new contact.\
 		\ntype \"rm contactName\" to remove contact.\
 		\ntype \"ls\" to print out all the contacts.\
@@ -188,6 +188,6 @@ def update(name):
 		.format(argument,new_name,new_number,new_address,new_email))
 	conn.commit()
 
-#starts the program's loop
+#starts the program
 if __name__ == '__main__':
 	start()

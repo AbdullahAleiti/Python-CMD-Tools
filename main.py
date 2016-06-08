@@ -2,6 +2,7 @@
 
 import Time
 import os
+import re
 import Tkinter
 import tkMessageBox
 import platform
@@ -9,13 +10,20 @@ from Tkinter import Entry,Label
 
 dictionary = {1: "clear", 2: "cls", 3: "exit", 4: "rename", 5: "about", 6: "start gui", 8: "history",
               9: "whatsnew", 10: "show date", 11: "show cl", 12: "sqr", 13: "help", 14: "pwd", 15: "clear history",
-              16: "pycont",17 : "test",18 : "getx"}
-ver = "0.80"
-AppVersion = "Aleiti Systems \nversion %s\nLast update on 2016/06/06" % ver
+              16: "pycont",17 : "test",18 : "getx",19 : "pc : for calculating percentage"}
+ver = "0.88"
+AppVersion = "Aleiti Systems \nversion %s\nLast update on 2016/06/08" % ver
 Counter = 0
 History = []
 platform = platform.system()
 new_user = False
+
+def arg_parser(command):
+    args = re.findall(r'\b[a-z]*.', command , flags = re.DOTALL | re.IGNORECASE)
+    if args[0] == "pc ":
+        percent(command)
+    else:
+        print "%s is not recognized as a command " % command
 
 def clisetup(toggle):
     userName = raw_input("enter your %sname please : " % toggle)
@@ -44,18 +52,12 @@ def changelog():
     changelogfile.close()
     return text_to_print
 
-
 def isitempty():
     if os.path.isfile("user.txt") \
             and os.path.getsize("user.txt"):
         return False
     else:
         return True
-
-userName = get_name(False);
-
-def sqr(number):
-    return number * number
 
 def getx():
     bx1 = bx2 = by1 = by2 = False
@@ -144,6 +146,22 @@ class Gui():
         Label(top,text=Text).grid(row=4 ,column=1)
         top.mainloop()
 
+def percent(command):
+    args = re.findall(r'\b[0-9][0-9]*', command , flags = re.DOTALL)
+    if len(args) < 2 or len(args) > 2:
+        print "pc is a program for calculating percentage :\nusage : pc {relative number} {whole number}"
+        return
+    elif int(args[1]) == 100:
+        print "dude!it's already calculated,but however it's {0}%".format(args[0])
+        return
+
+    try:
+        solution = (float(args[0])*100.0) / float(args[1])
+        print solution,"%"
+    except ValueError:
+        print "please enter valid numbers."
+
+userName = get_name(False);
 # main loop
 while True:
     if Counter == 0 and not new_user:
@@ -186,7 +204,7 @@ while True:
                 if cli == dictionary[3]:
                     break
                 number = float(cli)
-                print sqr(number)
+                print number*number
             except ValueError:
                 print "please enter a valid number"
     elif cli == dictionary[14]:
@@ -202,4 +220,4 @@ while True:
     elif len(cli) == 0:
         pass
     else:
-        print "%s is not recognized as a command " % cli
+        arg_parser(cli)
