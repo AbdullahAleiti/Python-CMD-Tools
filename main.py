@@ -1,33 +1,25 @@
 # -*- coding: UTF-8 -*-
-
 import Time
 import os
-import re
-import Tkinter
-import tkMessageBox
+import sys
 import platform
-from Tkinter import Entry,Label
+import re
+import subprocess
 
-dictionary = {1: "clear", 2: "cls", 3: "exit", 4: "rename", 5: "about", 6: "start gui", 8: "history",
-              9: "whatsnew", 10: "show date", 11: "show cl", 12: "sqr", 13: "help", 14: "pwd", 15: "clear history",
-              16: "pycont",17 : "test",18 : "getx",19 : "pc : for calculating percentage"}
-ver = "0.88"
-AppVersion = "Aleiti Systems \nversion %s\nLast update on 2016/06/08" % ver
-Counter = 0
+ver = "0.90"
+AppVersion = "Python Tools by Aleiti Technologies\nversion %s\nLast update on 2016/07/23" % ver
 History = []
 platform = platform.system()
 new_user = False
 
-def arg_parser(command):
-    args = re.findall(r'\b[a-z]*.', command , flags = re.DOTALL | re.IGNORECASE)
-    if args[0] == "pc ":
-        percent(command)
-    else:
-        print "%s is not recognized as a command " % command
+#check if the current platform is cygwin
+iscygwin = re.search("cygwin",r"{0}".format(platform),flags=re.IGNORECASE)
+#change directory to the script location
+os.chdir(sys.path[0])
 
 def clisetup(toggle):
     userName = raw_input("enter your %sname please : " % toggle)
-    userinfo = open("user.txt", "w+")
+    userinfo = open("user", "w+")
     userinfo.truncate()
     userinfo.write(userName)
     userinfo.close()
@@ -42,19 +34,18 @@ def get_name(toggle):
         new_user = True
         return clisetup("new ")
     elif not toggle:
-        userinfo = open("user.txt", "r")
+        userinfo = open("user", "r")
         return userinfo.read()
         userinfo.close()
 
 def changelog():
     changelogfile = open("changelog", "r")
-    text_to_print = changelogfile.read()
+    print changelogfile.read()
     changelogfile.close()
-    return text_to_print
 
 def isitempty():
-    if os.path.isfile("user.txt") \
-            and os.path.getsize("user.txt"):
+    if os.path.isfile("user") \
+            and os.path.getsize("user"):
         return False
     else:
         return True
@@ -62,40 +53,33 @@ def isitempty():
 def getx():
     bx1 = bx2 = by1 = by2 = False
     
-    def printvalue(var,value):
-        print "%s = %s" % (var, value)
-
-    def error():
-	   print "Error : more than one unknown value." 
+    def printvalue(var,value): print "%s = %s" % (var, value)
+    def error(): print "Error : more than one unknown value." 
 
     print ("\n******* GetX 1.4 *******")
-
+    #get input
     x1 = raw_input("for each ")
     if x1.isalpha():
         bx1 = True
     else:
         x1 = float(x1)
-
     x2 = raw_input("you got ")
     if x2.isalpha():
         bx2 = True
     else:
         x2 = float(x2)
-
     y1 = raw_input("that means for each ")
     if y1.isalpha():
         by1 = True
     else:
         y1 = float(y1)
-
     y2 = raw_input("you got ")
     if y2.isalpha():
         by2 = True
     else:
         y2 = float(y2)
 
-    # the end of input
-
+    #calculation
     if bx1:
         try:
             x = x2*y1/y2
@@ -103,24 +87,21 @@ def getx():
         except TypeError :
             error() 
             return
-
-    if bx2:
+    elif bx2:
         try:
             x = x1*y2/y1 
             printvalue(x2,x)
         except TypeError :
             error()
             return
-
-    if by1:
+    elif by1:
         try:
             x = x1*y2/x2
             printvalue(y1,x)
         except TypeError:
             error()
             return
-
-    if by2:
+    elif by2:
         try:
             x = x2*y1/x1
             printvalue(y2,x)
@@ -128,96 +109,96 @@ def getx():
             error()
             return
 
-class Gui():
-    def __init__(self, name):
-        top = Tkinter.Tk()
-
-        def helloCallBack():
-            tkMessageBox.showinfo("time", Time.getTime(False))
-
-        B = Tkinter.Button(top, text="show time", bg="gray", command=helloCallBack)
-        L = Tkinter.Label(top, text="hi %s" % name , fg = "orange")
-        Label(top,text="enter anything :").grid(row=1 ,column=0)
-        E = Entry(top)
-        L.grid(row=0 ,column=1)
-        E.grid(row=1 ,column=1)
-        B.grid(row=3 , column=1)
-        Text = E.get();
-        Label(top,text=Text).grid(row=4 ,column=1)
-        top.mainloop()
-
-def percent(command):
-    args = re.findall(r'\b[0-9][0-9]*', command , flags = re.DOTALL)
-    if len(args) < 2 or len(args) > 2:
-        print "pc is a program for calculating percentage :\nusage : pc {relative number} {whole number}"
-        return
-    elif int(args[1]) == 100:
-        print "dude!it's already calculated,but however it's {0}%".format(args[0])
-        return
-
+def percent(arg):
     try:
-        solution = (float(args[0])*100.0) / float(args[1])
+        if len(arg) != 3:
+            print "usage : pc {relative number} {whole number}"
+            return
+        elif int(arg[2]) == 100:
+            print "dude!it's already calculated,but however it's {0}%".format(arg[1])
+            return
+        solution = (float(arg[1])*100.0) / float(arg[2])
         print solution,"%"
     except ValueError:
         print "please enter valid numbers."
 
+def sigma(number):
+    if number == 0:
+        return 0
+    else:
+        return number + sigma(number - 1)
+
 userName = get_name(False);
+if not new_user:
+    print "welcome back %s" % userName
+
 # main loop
 while True:
-    if Counter == 0 and not new_user:
-        print "welcome back %s" % userName
-        Counter += 1
     cli = raw_input("%s@%s : " % (userName, platform))
     if len(cli) > 0:
         History.append(cli)
-    if cli == dictionary[3]:
+    if cli == "exit":
+        temp = ["arg_parser.pyc" ,"Time.pyc","gui.pyc" ,"pycont.pyc"]
+        for f in temp:
+            try:os.remove(f)  
+            except:pass
         exit()
-    elif cli == dictionary[4]:
+    elif cli == 'rename':
         userName = get_name(True)
-    elif cli == dictionary[10]:
+    elif cli == "date":
         Time.getTime(True)
-    elif cli == dictionary[6]:
-        Gui(userName)
-    elif cli == dictionary[1] or cli == dictionary[2]:
+    elif cli == "gui":
+        import gui
+        gui.parent(userName)
+    elif cli in ('clear','cls'):
         if platform == "Windows":
             os.system('cls')
-        elif platform == "Linux":
-            os.system("clear")
-    elif cli == dictionary[5]:
+        elif platform in ["Android","Linux"]:
+            os.system('clear')
+        elif iscygwin:
+            #cygwin has no clear command so i used this bash to do it
+            bash = "printf \"\\033c\""
+            p = subprocess.Popen(bash , shell=True)
+    elif cli == "about":
         print AppVersion
-    elif cli == dictionary[8]:
+    elif cli == 'history':
         count = 0
         for i in History:
             print (str(count) + "-" + i)
             count += 1
-    elif cli == dictionary[15]:
+    elif cli == 'clear history':
         del History[:]
-    elif cli == dictionary[9] or cli == dictionary[11]:
-        print changelog()
-    elif cli == dictionary[13]:
+    elif cli == 'whatsnew':
+        changelog()
+    elif cli == "help":
         for each_command in dictionary:
             print dictionary[each_command]
-    elif cli == dictionary[12]:
+    elif cli == "sqr":
         while 1:
             cli = raw_input("%s@%s(sqr): " % (userName, platform))
             try:
-                if cli == dictionary[3]:
+                if cli == 'exit':
                     break
                 number = float(cli)
                 print number*number
             except ValueError:
                 print "please enter a valid number"
-    elif cli == dictionary[14]:
+    elif cli == 'pwd':
         print os.getcwd()
-    elif cli == dictionary[16]:
+    elif cli == 'pycont':
         import pycont
         pycont.start()
-    elif cli == dictionary[17]:
-        import Test
-        Test.method(3,5)
-    elif cli == dictionary[18]:
+    elif cli == "getx":
         getx()
     elif len(cli) == 0:
         pass
     else:
-        arg_parser(cli)
+        args = cli.split()
+        arg_length = len(args)
+        if args[0] in ["pc","pc "]:
+            percent(args)
+        elif args[0] == "sg" and arg_length == 2:
+            if args[1].isdigit():print sigma(int(args[1]))
+            else:print "please enter a valid number."
+        else:
+            print "%s is not recognized as a command " % cli

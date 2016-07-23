@@ -33,3 +33,12 @@ what's new in 0.70:
 
 what's new in 0.88:
 -included a new percentage calculator program "pc"
+
+what's new in 0.89:
+-added the sigma functionality "sg {number}".
+-now the program clean up all the .pyc files at exit.
+-moved the gui code into it is own file.
+
+what's new in 0.90:
+-improved cygwin compatibility.
+-many improvments and bug fixes.
