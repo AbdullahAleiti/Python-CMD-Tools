@@ -6,7 +6,7 @@ import platform
 import re
 import subprocess
 
-ver = "0.90"
+ver = "0.90.10"
 AppVersion = "Python Tools by Aleiti Technologies\nversion %s\nLast update on 2016/07/23" % ver
 History = []
 platform = platform.system()
@@ -170,9 +170,6 @@ while True:
         del History[:]
     elif cli == 'whatsnew':
         changelog()
-    elif cli == "help":
-        for each_command in dictionary:
-            print dictionary[each_command]
     elif cli == "sqr":
         while 1:
             cli = raw_input("%s@%s(sqr): " % (userName, platform))
