@@ -6,7 +6,7 @@ import platform
 import re
 import subprocess
 
-ver = "0.90.10"
+ver = "0.90.15"
 AppVersion = "Python Tools by Aleiti Technologies\nversion %s\nLast update on 2016/07/23" % ver
 History = []
 platform = platform.system()
@@ -135,22 +135,24 @@ if not new_user:
 # main loop
 while True:
     cli = raw_input("%s@%s : " % (userName, platform))
-    if len(cli) > 0:
-        History.append(cli)
-    if cli == "exit":
+    args = cli.split()
+    arg_length = len(args)
+    if len(args[0]) > 0:
+        History.append(args[0])
+    if args[0] == "exit":
         temp = ["arg_parser.pyc" ,"Time.pyc","gui.pyc" ,"pycont.pyc"]
         for f in temp:
             try:os.remove(f)  
             except:pass
         exit()
-    elif cli == 'rename':
+    elif args[0] == 'rename':
         userName = get_name(True)
-    elif cli == "date":
+    elif args[0] == "date":
         Time.getTime(True)
-    elif cli == "gui":
+    elif args[0] == "gui":
         import gui
         gui.parent(userName)
-    elif cli in ('clear','cls'):
+    elif args[0] in ('clear','cls'):
         if platform == "Windows":
             os.system('cls')
         elif platform in ["Android","Linux"]:
@@ -159,43 +161,40 @@ while True:
             #cygwin has no clear command so i used this bash to do it
             bash = "printf \"\\033c\""
             p = subprocess.Popen(bash , shell=True)
-    elif cli == "about":
+    elif args[0] == "about":
         print AppVersion
-    elif cli == 'history':
+    elif args[0] == 'history':
         count = 0
         for i in History:
             print (str(count) + "-" + i)
             count += 1
-    elif cli == 'clear history':
+    elif args[0] == 'clear history':
         del History[:]
-    elif cli == 'whatsnew':
+    elif args[0] == 'whatsnew':
         changelog()
-    elif cli == "sqr":
+    elif args[0] == "sqr":
         while 1:
-            cli = raw_input("%s@%s(sqr): " % (userName, platform))
+            args[0] = raw_input("%s@%s(sqr): " % (userName, platform))
             try:
-                if cli == 'exit':
+                if args[0] in ['exit',"q"]:
                     break
-                number = float(cli)
+                number = float(args[0])
                 print number*number
             except ValueError:
                 print "please enter a valid number"
-    elif cli == 'pwd':
+    elif args[0] == 'pwd':
         print os.getcwd()
-    elif cli == 'pycont':
+    elif args[0] == 'pycont':
         import pycont
         pycont.start()
-    elif cli == "getx":
+    elif args[0] == "getx":
         getx()
-    elif len(cli) == 0:
+    elif len(args[0]) == 0:
         pass
+    elif args[0] in ["pc","pc "]:
+        percent(args)
+    elif args[0] == "sg" and arg_length == 2:
+        if args[1].isdigit():print sigma(int(args[1]))
+        else:print "please enter a valid number."
     else:
-        args = cli.split()
-        arg_length = len(args)
-        if args[0] in ["pc","pc "]:
-            percent(args)
-        elif args[0] == "sg" and arg_length == 2:
-            if args[1].isdigit():print sigma(int(args[1]))
-            else:print "please enter a valid number."
-        else:
-            print "%s is not recognized as a command " % cli
+        print "%s is not recognized as a command " % args[0]
